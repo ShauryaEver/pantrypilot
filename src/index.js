@@ -1,4 +1,6 @@
 'use strict';
+// Vercel's entrypoint detection looks for a direct express import in this file.
+const express = require('express'); // eslint-disable-line no-unused-vars
 const config = require('./config');
 const log = require('./lib/log');
 const { createApp } = require('./express-app');
