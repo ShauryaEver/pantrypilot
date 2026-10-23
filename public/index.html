@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PantryPilot</title>
+  <meta name="description" content="Agentic AI that turns food about to expire into safe, delicious meal plans.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%231f4d3a'/%3E%3Cpath d='M9 18c0-5 4-9 11-9 0 7-4 11-9 11z' fill='%23f6efe2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="top">
+    <div class="brand"><span class="logo" aria-hidden="true"></span><span>PantryPilot</span></div>
+    <nav id="tabs" class="tabs hidden" aria-label="Sections">
+      <button class="tab active" data-tab="pantry">Pantry</button>
+      <button class="tab" data-tab="planner">AI Planner</button>
+      <button class="tab" data-tab="impact">Impact</button>
+      <button class="tab" data-tab="settings">Settings</button>
+    </nav>
+    <button id="logout" class="ghost hidden">Log out</button>
+  </header>
+
+  <main id="main">
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <!-- Auth -->
+    <section id="view-auth" class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Agentic AI &middot; Food waste &middot; Nutrition</p>
+        <h1>Cook what's about to <em>expire</em>.</h1>
+        <p class="lede">Scan a receipt, let a team of AI agents plan safe meals around your allergens and diet, and watch the money and CO<sub>2</sub> you save add up.</p>
+        <ul class="pills">
+          <li>Gemini-powered planning</li>
+          <li>Allergen safety critic</li>
+          <li>Private by design</li>
+        </ul>
+      </div>
+      <form id="auth-form" class="card auth" autocomplete="on">
+        <h2 id="auth-title">Welcome back</h2>
+        <label>Email<input id="email" type="email" required autocomplete="email" maxlength="254"></label>
+        <label>Password<input id="password" type="password" required minlength="10" maxlength="128" autocomplete="current-password"><small>At least 10 characters.</small></label>
+        <button class="primary" type="submit" id="auth-submit">Log in</button>
+        <button class="link" type="button" id="auth-switch">New here? Create an account</button>
+        <div id="google-box" class="hidden">
+          <div class="or"><span>or</span></div>
+          <button class="secondary" type="button" id="google-btn">Continue with Google</button>
+        </div>
+        <p id="auth-error" class="error" role="alert"></p>
+      </form>
+    </section>
+
+    <!-- Pantry -->
+    <section id="view-pantry" class="view hidden">
+      <div class="grid two">
+        <form id="item-form" class="card">
+          <h2>Add an item</h2>
+          <label>Name<input id="i-name" required maxlength="60" placeholder="e.g. Spinach"></label>
+          <div class="row">
+            <label>Quantity<input id="i-qty" type="number" min="0.01" step="any" value="1" required></label>
+            <label>Unit<select id="i-unit"></select></label>
+          </div>
+          <div class="row">
+            <label>Category<select id="i-cat"></select></label>
+            <label>Expires on<input id="i-exp" type="date" required></label>
+          </div>
+          <label>Cost<input id="i-cost" type="number" min="0" step="0.01" value="0"></label>
+          <button class="primary" type="submit">Add to pantry</button>
+        </form>
+
+        <div class="card">
+          <h2>Smart intake</h2>
+          <p class="muted">Paste receipt text or upload a photo. The Intake agent extracts items and estimates shelf life.</p>
+          <label>Receipt text<textarea id="r-text" rows="5" maxlength="6000" placeholder="2 Tomatoes 40&#10;1 l Milk 60&#10;Spinach 30"></textarea></label>
+          <div class="row actions">
+            <button class="secondary" id="r-parse" type="button">Parse text</button>
+            <label class="file secondary">Scan photo<input id="r-file" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          </div>
+          <div id="r-preview" class="preview hidden">
+            <h3>Review before adding</h3>
+            <ul id="r-list" class="plain"></ul>
+            <button class="primary" id="r-add" type="button">Add all</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="between"><h2>Your pantry</h2><span id="pantry-count" class="muted"></span></div>
+        <ul id="pantry-list" class="items"></ul>
+        <p id="pantry-empty" class="muted hidden">Nothing here yet. Add an item or scan a receipt.</p>
+      </div>
+    </section>
+
+    <!-- Planner -->
+    <section id="view-planner" class="view hidden">
+      <div class="card">
+        <div class="between">
+          <div>
+            <h2>AI meal planner</h2>
+            <p class="muted">Inventory &rarr; Planner (Gemini) &rarr; Safety critic. Unsafe or ungrounded output never reaches you.</p>
+          </div>
+          <div class="row actions">
+            <label class="inline">Days<select id="p-days"><option>1</option><option selected>3</option><option>5</option><option>7</option></select></label>
+            <button class="primary" id="p-run">Generate plan</button>
+          </div>
+        </div>
+      </div>
+      <div id="plan-out" class="hidden">
+        <div id="plan-banner" class="banner"></div>
+        <div class="grid stats" id="plan-stats"></div>
+        <div id="plan-meals" class="grid meals"></div>
+        <div class="card"><h3>Agent trace</h3><ol id="plan-trace" class="trace"></ol></div>
+      </div>
+    </section>
+
+    <!-- Impact -->
+    <section id="view-impact" class="view hidden">
+      <div class="grid stats" id="impact-stats"></div>
+      <div class="card"><h2>Weekly: saved vs wasted</h2><div id="impact-chart" class="chart"></div><p class="muted small">CO&#8322; figures are estimates from average emission factors per food category.</p></div>
+    </section>
+
+    <!-- Settings -->
+    <section id="view-settings" class="view hidden">
+      <div class="grid two">
+        <form id="profile-form" class="card">
+          <h2>Diet &amp; allergens</h2>
+          <label>Diet<select id="s-diet"></select></label>
+          <fieldset><legend>Allergens (enforced by the safety critic)</legend><div id="s-allergens" class="checks"></div></fieldset>
+          <label>Household size<input id="s-house" type="number" min="1" max="12" value="1"></label>
+          <button class="primary" type="submit">Save profile</button>
+        </form>
+        <div class="card">
+          <h2>Your data</h2>
+          <p class="muted">Export everything we store, or permanently delete your account.</p>
+          <a class="secondary btn" href="/api/auth/export" download>Export my data</a>
+          <form id="delete-form" class="danger-zone">
+            <label id="d-pass-label">Confirm password to delete account<input id="d-pass" type="password" autocomplete="current-password" maxlength="128"></label>
+            <p id="d-google-note" class="muted small hidden">This account uses Google sign-in. You will be asked to sign in with Google again to confirm.</p>
+            <button class="danger" type="submit">Delete account</button>
+          </form>
+          <h3>System health</h3>
+          <dl id="metrics" class="kv"></dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">Built with Gemini &amp; Vertex AI, Supabase, Firebase Auth &middot; Runs on Cloud Run &middot; Analytics via BigQuery</footer>
+  <script src="/app.js" defer></script>
+</body>
+</html>

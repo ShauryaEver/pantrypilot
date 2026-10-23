@@ -1,0 +1,33 @@
+{
+  "name": "pantrypilot",
+  "version": "1.0.0",
+  "description": "Agentic AI food-waste and nutrition planner (Gemini/Vertex AI + Express + Supabase + Firebase + BigQuery)",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "NODE_ENV=test node --test test/*.test.js",
+    "bq:export": "node deploy/bq_export.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/bigquery": "^8.1.0",
+    "@google/genai": "^2.31.0",
+    "@supabase/supabase-js": "^2.58.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "firebase-admin": "^13.5.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "zod": "^4.6.7"
+  },
+  "engines": {
+    "node": ">=22.5"
+  }
+}
