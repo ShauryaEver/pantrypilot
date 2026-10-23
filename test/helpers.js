@@ -1,6 +1,6 @@
 'use strict';
 process.env.NODE_ENV = 'test';
-const { createApp } = require('../src/app');
+require('../src/express-app');
 
 async function start() {
   const server = createApp().listen(0);

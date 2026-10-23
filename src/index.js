@@ -1,7 +1,7 @@
 'use strict';
 const config = require('./config');
 const log = require('./lib/log');
-const { createApp } = require('./app');
+const { createApp } = require('./express-app');
 const store = require('./store');
 
 const app = createApp();
